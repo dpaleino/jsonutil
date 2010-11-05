@@ -27,55 +27,46 @@ def main():
     elif cmd == 'len':
         print get_len(json, path)
 
-def get(json, path):
-    strippath = path[1:]
+def _loop(fn, json, path):
+    stripped = path[1:]
     newpath = None
-    if '/' in strippath:
-        key, newpath = strippath.split('/', 1)
+    if '/' in stripped:
+        key, newpath = stripped.split('/', 1)
         newpath = '/'+newpath
     else:
-        key = strippath
+        key = stripped
 
-    if key == '':
-        return json
+    if key:
+        if type(json) == list:
+            if newpath:
+                return _loop(fn, json[int(key)], newpath)
+            else:
+                return fn(json[int(key)])
+        if type(json) == dict:
+            if newpath:
+                return _loop(fn, json[key], newpath)
+            else:
+                return fn(json[key])
+    return fn(json)
 
-    if type(json) == list:
-        if newpath:
-            return get(json[int(key)], newpath)
-        else:
-            return json[int(key)]
-    if type(json) == dict:
-        if newpath:
-            return get(json[key], newpath)
-        else:
-            return json[key]
-    elif type(json) in [str, int, float]:
-        return json
+def get(json, path):
+    def ret(arg):
+        return arg
+    return _loop(ret, json, path)
 
 def typeof(json, path):
-    strippath = path[1:]
-    newpath = None
-    if '/' in strippath:
-        key, newpath = strippath.split('/', 1)
-        newpath = '/'+newpath
-    else:
-        key = strippath
+    def ret(arg):
+        return str(type(arg))
+    return _loop(ret, json, path)
 
-    if key == '':
-        return str(type(json))
+def get_len(json, path):
+    def ret(arg):
+        try:
+            return len(arg)
+        except TypeError, e:
+            return 'Unsupported, ' + e.args[0]
 
-    if type(json) == list:
-        if newpath:
-            return typeof(json[int(key)], newpath)
-        else:
-            return str(type(json[int(key)]))
-    if type(json) == dict:
-        if newpath:
-            return typeof(json[key], newpath)
-        else:
-            return str(type(json[key]))
-    elif type(json) in [str, int, float]:
-        return str(type(json))
+    return _loop(ret, json, path)
 
 def set_value(json, path, value, force=False):
     strippath = path[1:]
@@ -110,43 +101,6 @@ def set_value(json, path, value, force=False):
     elif type(json) in [str, int, float]:
         json = value
         return original
-
-def get_len(json, path):
-    strippath = path[1:]
-    newpath = None
-    if '/' in strippath:
-        key, newpath = strippath.split('/', 1)
-        newpath = '/'+newpath
-    else:
-        key = strippath
-
-    if key == '':
-        try:
-            return len(json)
-        except TypeError, e:
-            return 'Unsupported, ' + e.args[0]
-
-    if type(json) == list:
-        if newpath:
-            return get_len(json[int(key)], newpath)
-        else:
-            try:
-                return len(json[int(key)])
-            except TypeError, e:
-                return 'Unsupported, ' + e.args[0]
-    if type(json) == dict:
-        if newpath:
-            return get_len(json[key], newpath, value)
-        else:
-            try:
-                return len(json[key])
-            except TypeError, e:
-                return 'Unsupported, ' + e.args[0]
-
-    try:
-        return len(json)
-    except TypeError, e:
-        return 'Unsupported, ' + e.args[0]
 
 if __name__ == '__main__':
     main()
