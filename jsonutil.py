@@ -6,12 +6,11 @@
 import cjson
 import sys
 
-global original
+original = None
 
 def main():
     global original
-    json = eval(''.join(open(sys.argv[1])))
-    original = json
+    original = cjson.decode(open(sys.argv[1]).read())
 
     cmd = sys.argv[2]
     path = sys.argv[3]
@@ -19,13 +18,13 @@ def main():
     force = False
 
     if cmd == 'get':
-        print get(json, path)
+        print get(original, path)
     elif cmd == 'typeof':
-        print typeof(json, path)
+        print typeof(original, path)
     elif cmd == 'set':
-        print set_value(json, path, value, force)
+        print set_value(original, path, value, force)
     elif cmd == 'len':
-        print get_len(json, path)
+        print get_len(original, path)
 
 def _loop(fn, json, path):
     stripped = path[1:]
