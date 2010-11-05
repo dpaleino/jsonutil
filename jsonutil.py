@@ -15,6 +15,8 @@ def main():
 
     if cmd == 'get':
         print get(json, path)
+    elif cmd == 'typeof':
+        print typeof(json, path)
 
 def get(json, path):
     strippath = path[1:]
@@ -40,6 +42,31 @@ def get(json, path):
             return json[key]
     elif type(json) in [str, int, float]:
         return json
+
+def typeof(json, path):
+    strippath = path[1:]
+    newpath = None
+    if '/' in strippath:
+        key, newpath = strippath.split('/', 1)
+        newpath = '/'+newpath
+    else:
+        key = strippath
+
+    if key == '':
+        return str(type(json))
+
+    if type(json) == list:
+        if newpath:
+            return typeof(json[int(key)], newpath)
+        else:
+            return str(type(json[int(key)]))
+    if type(json) == dict:
+        if newpath:
+            return typeof(json[key], newpath)
+        else:
+            return str(type(json[key]))
+    elif type(json) in [str, int, float]:
+        return str(type(json))
 
 if __name__ == '__main__':
     main()
