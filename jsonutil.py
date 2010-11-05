@@ -24,6 +24,8 @@ def main():
         print typeof(json, path)
     elif cmd == 'set':
         print set_value(json, path, value, force)
+    elif cmd == 'len':
+        print get_len(json, path)
 
 def get(json, path):
     strippath = path[1:]
@@ -108,6 +110,43 @@ def set_value(json, path, value, force=False):
     elif type(json) in [str, int, float]:
         json = value
         return original
+
+def get_len(json, path):
+    strippath = path[1:]
+    newpath = None
+    if '/' in strippath:
+        key, newpath = strippath.split('/', 1)
+        newpath = '/'+newpath
+    else:
+        key = strippath
+
+    if key == '':
+        try:
+            return len(json)
+        except TypeError, e:
+            return 'Unsupported, ' + e.args[0]
+
+    if type(json) == list:
+        if newpath:
+            return get_len(json[int(key)], newpath)
+        else:
+            try:
+                return len(json[int(key)])
+            except TypeError, e:
+                return 'Unsupported, ' + e.args[0]
+    if type(json) == dict:
+        if newpath:
+            return get_len(json[key], newpath, value)
+        else:
+            try:
+                return len(json[key])
+            except TypeError, e:
+                return 'Unsupported, ' + e.args[0]
+
+    try:
+        return len(json)
+    except TypeError, e:
+        return 'Unsupported, ' + e.args[0]
 
 if __name__ == '__main__':
     main()
