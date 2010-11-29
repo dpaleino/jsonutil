@@ -14,14 +14,14 @@ def main():
 
     cmd = sys.argv[2]
     path = sys.argv[3]
-    value = sys.argv[4]
-    force = False
 
     if cmd == 'get':
         print get(original, path)
     elif cmd == 'typeof':
         print typeof(original, path)
     elif cmd == 'set':
+        value = sys.argv[4]
+        force = False
         print set_value(original, path, value, force)
     elif cmd == 'len':
         print get_len(original, path)
