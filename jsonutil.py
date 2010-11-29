@@ -87,22 +87,22 @@ def set_value(json, path, value, force=False):
 
     if type(json) == list:
         if newpath:
-            return set_value(json[int(key)], newpath, value)
+            return set_value(json[int(key)], newpath, value, force)
         else:
-            if type(json[int(key)]) in [list, dict]:
+            if type(json[int(key)]) in [list, dict] and not force:
                 return 'Not setting the value, please use --force.'
-            else:
-                json[int(key)] = value
-                return original
+
+            json[int(key)] = value
+            return original
     if type(json) == dict:
         if newpath:
-            return set_value(json[key], newpath, value)
+            return set_value(json[key], newpath, value, force)
         else:
-            if type(json[key]) in [list, dict]:
+            if type(json[key]) in [list, dict] and not force:
                 return 'Not setting the value, please use --force.'
-            else:
-                json[key] = value
-                return original
+
+            json[key] = value
+            return original
     elif type(json) in [str, int, float]:
         json = value
         return original
