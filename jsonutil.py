@@ -143,4 +143,7 @@ if __name__ == '__main__':
         path = args[1]
 
     ret = main(filename, path, opts.cmd, opts.force, value)
-    pprint.pprint(ret, width=20)
+    if isinstance(ret, (str, unicode)):
+        print ret
+    else:
+        pprint.pprint(ret, width=20)
