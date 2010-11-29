@@ -13,14 +13,14 @@ def main(filename, path, cmd, force):
     original = cjson.decode(open(filename).read())
 
     if cmd == 'get':
-        print get(original, path)
+        return get(original, path)
     elif cmd == 'typeof':
-        print typeof(original, path)
+        return typeof(original, path)
     elif cmd == 'set':
         value = sys.argv[4]
-        print set_value(original, path, value, force)
+        return set_value(original, path, value, force)
     elif cmd == 'len':
-        print get_len(original, path)
+        return get_len(original, path)
 
 def _loop(fn, json, path):
     stripped = path[1:]
@@ -128,4 +128,4 @@ if __name__ == '__main__':
         filename = args[0]
         path = args[1]
 
-    main(filename, path, opts.cmd, opts.force)
+    print main(filename, path, opts.cmd, opts.force)
