@@ -33,12 +33,12 @@ def _loop(fn, json, path):
         key = stripped
 
     if key:
-        if type(json) == list:
+        if isinstance(json, list):
             if newpath:
                 return _loop(fn, json[int(key)], newpath)
             else:
                 return fn(json[int(key)])
-        if type(json) == dict:
+        if isinstance(json, dict):
             if newpath:
                 return _loop(fn, json[key], newpath)
             else:
@@ -85,25 +85,25 @@ def set_value(json, path, value, force=False):
     if key == '':
         return 'Unsupported.'
 
-    if type(json) == list:
+    if isinstance(json, list):
         if newpath:
             return set_value(json[int(key)], newpath, value, force)
         else:
-            if type(json[int(key)]) in [list, dict] and not force:
+            if isinstance(json[int(key)], (list, dict)) and not force:
                 return 'Not setting the value, please use --force.'
 
             json[int(key)] = value
             return original
-    if type(json) == dict:
+    if isinstance(json, dict):
         if newpath:
             return set_value(json[key], newpath, value, force)
         else:
-            if type(json[key]) in [list, dict] and not force:
+            if isinstance(json[key], (list, dict)) and not force:
                 return 'Not setting the value, please use --force.'
 
             json[key] = value
             return original
-    elif type(json) in [str, int, float]:
+    elif isinstance(json, (str, int, float)):
         json = value
         return original
 
