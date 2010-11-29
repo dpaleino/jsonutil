@@ -8,12 +8,9 @@ import sys
 
 original = None
 
-def main():
+def main(filename, path, cmd, force):
     global original
-    original = cjson.decode(open(sys.argv[1]).read())
-
-    cmd = sys.argv[2]
-    path = sys.argv[3]
+    original = cjson.decode(open(filename).read())
 
     if cmd == 'get':
         print get(original, path)
@@ -21,7 +18,6 @@ def main():
         print typeof(original, path)
     elif cmd == 'set':
         value = sys.argv[4]
-        force = False
         print set_value(original, path, value, force)
     elif cmd == 'len':
         print get_len(original, path)
@@ -102,4 +98,34 @@ def set_value(json, path, value, force=False):
         return original
 
 if __name__ == '__main__':
-    main()
+    from optparse import OptionParser
+
+    parser = OptionParser(usage='Usage: %prog [command [arguments]] file.json /path/', version='%prog 0.1', prog='jsonutil')
+    parser.set_defaults(verbose=True)
+
+    parser.add_option('-g', '--get', action='store_const', const='get', dest='cmd', default='get',
+                      help='get the value of the element at the given path. This is the default action if no command is given.')
+    parser.add_option('-s', '--set', action='store', dest='set', metavar='VALUE',
+                      help='set the value of the element at the given path to VALUE. The json will not be written in-place,'+
+                      'you should use something like sponge(1).')
+    parser.add_option('-l', '--length', action='store_const', const='len', dest='cmd',
+                      help='get the length of the element at the given path.')
+    parser.add_option('-t', '--type', action='store_const', const='typeof', dest='cmd',
+                      help='get the type of the element pointed by the given path.')
+    parser.add_option('-f', '--force', action='store_true', dest='force', default=False,
+                      help='force the setting of a value, even if it overwrites a different type of element.')
+
+    opts, args = parser.parse_args()
+
+    # handle -s/--set
+    if opts.set:
+        opts.cmd = 'set'
+        value = opts.set
+
+    if not args:
+        parser.error('need a JSON file and a path.')
+    else:
+        filename = args[0]
+        path = args[1]
+
+    main(filename, path, opts.cmd, opts.force)
