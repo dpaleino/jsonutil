@@ -99,6 +99,7 @@ def set_value(json, path, value, force=False):
 
 if __name__ == '__main__':
     from optparse import OptionParser
+    import pprint
 
     parser = OptionParser(usage='Usage: %prog [command [arguments]] file.json /path/', version='%prog 0.1', prog='jsonutil')
     parser.set_defaults(verbose=True)
@@ -128,4 +129,5 @@ if __name__ == '__main__':
         filename = args[0]
         path = args[1]
 
-    print main(filename, path, opts.cmd, opts.force)
+    ret = main(filename, path, opts.cmd, opts.force)
+    pprint.pprint(ret, width=20)
