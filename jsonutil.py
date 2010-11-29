@@ -8,7 +8,7 @@ import sys
 
 original = None
 
-def main(filename, path, cmd, force):
+def main(filename, path, cmd, force, value=None):
     global original
     original = cjson.decode(open(filename).read())
 
@@ -17,7 +17,6 @@ def main(filename, path, cmd, force):
     elif cmd == 'typeof':
         return typeof(original, path)
     elif cmd == 'set':
-        value = sys.argv[4]
         return set_value(original, path, value, force)
     elif cmd == 'len':
         return get_len(original, path)
@@ -132,6 +131,7 @@ if __name__ == '__main__':
     opts, args = parser.parse_args()
 
     # handle -s/--set
+    value = None
     if opts.set:
         opts.cmd = 'set'
         value = opts.set
@@ -142,5 +142,5 @@ if __name__ == '__main__':
         filename = args[0]
         path = args[1]
 
-    ret = main(filename, path, opts.cmd, opts.force)
+    ret = main(filename, path, opts.cmd, opts.force, value)
     pprint.pprint(ret, width=20)
