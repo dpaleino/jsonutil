@@ -21,6 +21,8 @@ def main(filename, path, cmd, force):
         return set_value(original, path, value, force)
     elif cmd == 'len':
         return get_len(original, path)
+    elif cmd == 'keys':
+        return get_keys(original, path)
 
 def _loop(fn, json, path):
     stripped = path[1:]
@@ -59,6 +61,15 @@ def get_len(json, path):
         try:
             return len(arg)
         except TypeError, e:
+            return 'Unsupported, ' + e.args[0]
+
+    return _loop(ret, json, path)
+
+def get_keys(json, path):
+    def ret(arg):
+        try:
+            return arg.keys()
+        except AttributeError, e:
             return 'Unsupported, ' + e.args[0]
 
     return _loop(ret, json, path)
@@ -115,6 +126,8 @@ if __name__ == '__main__':
                       help='get the type of the element pointed by the given path.')
     parser.add_option('-f', '--force', action='store_true', dest='force', default=False,
                       help='force the setting of a value, even if it overwrites a different type of element.')
+    parser.add_option('-k', '--keys', action='store_const', const='keys', dest='cmd',
+                      help='lists the keys of the element pointed by the given path.')
 
     opts, args = parser.parse_args()
 
