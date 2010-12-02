@@ -8,9 +8,9 @@ import sys
 
 original = None
 
-def main(filename, path, cmd, force, value=None):
+def main(fileobj, path, cmd, force, value=None):
     global original
-    original = cjson.decode(open(filename).read())
+    original = cjson.decode(fileobj.read())
 
     if cmd == 'get':
         return get(original, path)
@@ -110,8 +110,9 @@ def set_value(json, path, value, force=False):
 if __name__ == '__main__':
     from optparse import OptionParser
     import pprint
+    import os
 
-    parser = OptionParser(usage='Usage: %prog [command [arguments]] file.json /path/', version='%prog 0.1', prog='jsonutil')
+    parser = OptionParser(usage='Usage: %prog [command [arguments]] <json|-> /path/', version='%prog 0.1', prog='jsonutil')
     parser.set_defaults(verbose=True)
 
     parser.add_option('-g', '--get', action='store_const', const='get', dest='cmd', default='get',
@@ -140,9 +141,15 @@ if __name__ == '__main__':
         parser.error('need a JSON file and a path.')
     else:
         filename = args[0]
+        if os.path.exists(filename):
+            fileobj = open(filename)
+        elif filename == '-':
+            fileobj = sys.stdin
+        else:
+            raise Exception, 'can\'t open %s' % filename
         path = args[1]
 
-    ret = main(filename, path, opts.cmd, opts.force, value)
+    ret = main(fileobj, path, opts.cmd, opts.force, value)
     if isinstance(ret, (str, unicode)):
         print ret
     else:
