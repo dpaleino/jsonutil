@@ -26,7 +26,7 @@ data from a JSON object, with an easy-to-understand "path" syntax.
       url='http://www.hanskalabs.net/projects/jsonutil',
       license='GPL-3+',
       packages=[],
-      scripts=['jsonutil.py'],
+      scripts=['jsonutil'],
       include_package_data=False,
       zip_safe=False,
       requires=[
