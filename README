@@ -1,0 +1,77 @@
+jsonutil
+========
+
+jsonutil is a JSON manipulation utility.
+
+It lets you extract various bits of data from a JSON object, with an
+easy-to-understand "path" syntax.
+
+The path syntax
+---------------
+
+Let's see the syntax of this "path":
+
+ - if you want to get the full content of the JSON object, just search for
+   "root", i.e. /.
+ - if the (sub-)object is a dict, you can use the key in the path, let's say
+   /key/.
+ - if the (sub-)object is a list, you can access the wanted element by its
+   list index, starting from 0. So, for the first element of the root list:
+   /0/.
+
+The above syntax works recursively. So, if you have a dictionary, with a
+"test" key, whose value is a list of objects, you can get the third element
+of this list with /test/2/.
+
+Available commands
+------------------
+
+The list of available commands is accessible from the command's --help option.
+The list there is the only authoritative one, the one in here is just for
+reference, and may be out-of-date.
+
+This is the list of available commands, with their explanation:
+
+  -g , --get
+    Get the value of the element at the given path. This is the default action
+    if no command is given.
+
+  -s VALUE , --set=VALUE
+    Set the value of the element at the given path to VALUE. The json will not
+    be written in-place, you should use something like sponge(1). jsonutil will
+    not overwrite data of a different type, unless you use --force.
+
+  -l , --length
+    Get the length of the element at the given path. This applies to
+    dictionaries, lists and strings.
+
+  -t , --type
+    Return the type of the element pointed by the given path.
+
+  -k , --keys
+    Lists the keys of the element pointed by the given path, if it's a
+    dictionary.
+
+Other options
+-------------
+
+There are other options available, which should be used in combination with one
+of the above commands:
+
+  -f , --force
+    Only makes sense when used with --set: force the setting of a value, even
+    if it overwrites a different type of element.
+
+  -p , --pretty
+    Pretty print an indented JSON. This should only be used to ease reading by
+    a human.
+
+Credits
+-------
+
+jsonutil was written by David Paleino <d.paleino@gmail.com>, and is licensed
+under the terms of the GNU General Public License, version 3 or, at your
+option, any later version.
+
+To report bugs, please contact me at my e-mail address, and be sure to put
+[jsonutil] somewhere in the Subject line.
