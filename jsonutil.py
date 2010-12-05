@@ -6,6 +6,8 @@
 import cjson
 import sys
 
+version = '0.1'
+
 original = None
 
 def main(fileobj, path, cmd, force, value=None):
@@ -112,7 +114,7 @@ if __name__ == '__main__':
     import pprint
     import os
 
-    parser = OptionParser(usage='Usage: %prog [command [arguments]] <json|-> /path/', version='%prog 0.1', prog='jsonutil')
+    parser = OptionParser(usage='Usage: %prog [command [arguments]] <json|-> /path/', version='%prog %s' % version, prog='jsonutil')
     parser.set_defaults(verbose=True)
 
     parser.add_option('-f', '--force', action='store_true', dest='force', default=False,
