@@ -128,6 +128,8 @@ if __name__ == '__main__':
                       help='force the setting of a value, even if it overwrites a different type of element.')
     parser.add_option('-k', '--keys', action='store_const', const='keys', dest='cmd',
                       help='lists the keys of the element pointed by the given path.')
+    parser.add_option('-p', '--pretty', action='store_true', dest='pretty', default=False,
+                      help='pretty print an indented JSON.')
 
     opts, args = parser.parse_args()
 
@@ -150,7 +152,7 @@ if __name__ == '__main__':
         path = args[1]
 
     ret = main(fileobj, path, opts.cmd, opts.force, value)
-    if isinstance(ret, (str, unicode)):
+    if isinstance(ret, (str, unicode)) or not opts.pretty:
         print ret
     else:
         pprint.pprint(ret, width=20)
