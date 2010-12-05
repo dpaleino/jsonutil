@@ -108,28 +108,31 @@ def set_value(json, path, value, force=False):
         return original
 
 if __name__ == '__main__':
-    from optparse import OptionParser
+    from optparse import OptionParser, OptionGroup
     import pprint
     import os
 
     parser = OptionParser(usage='Usage: %prog [command [arguments]] <json|-> /path/', version='%prog 0.1', prog='jsonutil')
     parser.set_defaults(verbose=True)
 
-    parser.add_option('-g', '--get', action='store_const', const='get', dest='cmd', default='get',
-                      help='get the value of the element at the given path. This is the default action if no command is given.')
-    parser.add_option('-s', '--set', action='store', dest='set', metavar='VALUE',
-                      help='set the value of the element at the given path to VALUE. The json will not be written in-place,'+
-                      'you should use something like sponge(1).')
-    parser.add_option('-l', '--length', action='store_const', const='len', dest='cmd',
-                      help='get the length of the element at the given path.')
-    parser.add_option('-t', '--type', action='store_const', const='typeof', dest='cmd',
-                      help='get the type of the element pointed by the given path.')
     parser.add_option('-f', '--force', action='store_true', dest='force', default=False,
                       help='force the setting of a value, even if it overwrites a different type of element.')
-    parser.add_option('-k', '--keys', action='store_const', const='keys', dest='cmd',
-                      help='lists the keys of the element pointed by the given path.')
     parser.add_option('-p', '--pretty', action='store_true', dest='pretty', default=False,
                       help='pretty print an indented JSON.')
+
+    group = OptionGroup(parser, 'Commands', 'You can choose only one of these commands.')
+    group.add_option('-g', '--get', action='store_const', const='get', dest='cmd', default='get',
+                      help='get the value of the element at the given path. This is the default action if no command is given.')
+    group.add_option('-s', '--set', action='store', dest='set', metavar='VALUE',
+                      help='set the value of the element at the given path to VALUE. The json will not be written in-place,'+
+                      'you should use something like sponge(1).')
+    group.add_option('-l', '--length', action='store_const', const='len', dest='cmd',
+                      help='get the length of the element at the given path.')
+    group.add_option('-t', '--type', action='store_const', const='typeof', dest='cmd',
+                      help='get the type of the element pointed by the given path.')
+    group.add_option('-k', '--keys', action='store_const', const='keys', dest='cmd',
+                      help='lists the keys of the element pointed by the given path.')
+    parser.add_option_group(group)
 
     opts, args = parser.parse_args()
 
